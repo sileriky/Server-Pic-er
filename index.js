@@ -64,11 +64,12 @@ bot.on('message', message => {
         if ((message.content === '!SP') || (message.content === "!help")) {
             message.channel.send(
                 'Welcome to your friendly neighborhood bot! Please, command me:\n' +
-                '!SP or !help - Shows this menu\n' +
+                '!SP or !help - Shows this menu!\n' +
                 '!ping - Pong!\n' +
                 '!image - Make me search for stuff!\n' +
                 '!say ... - Make me say stuff!\n' +
-                '!coffee - For when you need that extra kick!\n'
+                '!coffee - For when you need that extra kick!\n' +
+                '!memory - For when you are feeling nostalgic (up to 100 messages ago)!\n'
             );
         }
 
@@ -78,6 +79,7 @@ bot.on('message', message => {
         }
 
         //Google for an image(BA#2)
+        //CRASH: When no query (aka no text to search with)
         if (message.content.startsWith("!image")) {
             var txtToSrch = message.content.slice(7);
             //Select a random result from the first page of results
@@ -94,7 +96,7 @@ bot.on('message', message => {
 
         //Implement Coffee (BA#4)
         //Warning: Implemented poorly
-        //TODO: raise arms in despair whilst shouting no and fixing this
+        //TODO: raise arms in despair whilst shouting NOOOO and fixing this
         if (message.content.startsWith("!coffee")) {
             if (message.content.slice(8) === "reset") {
                 drinkers = {};
@@ -109,6 +111,13 @@ bot.on('message', message => {
                 //console.log(drinkers);
                 message.channel.send(curUser + " just drank some coffee!\nThey had " + drinkers[curUser] + " cups so far.");
             }
+        }
+
+        //Posts one random message from the channel it got called in (BA#5)
+        if (message.content.startsWith("!memory")) {
+            message.channel.fetchMessages({ limit: 100 })
+                .then(messages => message.channel.send(messages.random().content))
+                .catch(console.error);
         }
 
         //BOT ADMIN COMMANDS
